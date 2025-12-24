@@ -1,0 +1,40 @@
+name: Build and Deploy to GitHub Pages Repo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install pnpm
+        run: npm i -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: |
+          pnpm hexo clean
+          pnpm hexo generate
+
+      - name: Push public to wayfare11/blog
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        with:
+          source-directory: "./public"
+          destination-github-username: "wayfare11"
+          destination-repository-name: "blog"
+          user-email: "way19971111@163.com"
+          target-branch: "main"
