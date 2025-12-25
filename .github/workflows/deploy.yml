@@ -23,6 +23,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Link theme (ShokaX)
+        run: |
+          rm -rf themes/shokax
+          ln -s ../node_modules/hexo-theme-shokax themes/shokax
+
+
       - name: Build
         run: |
           pnpm hexo clean
