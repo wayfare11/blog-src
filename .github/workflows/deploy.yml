@@ -3,6 +3,7 @@ name: Build and Deploy to GitHub Pages Repo
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -11,28 +12,40 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
+          cache: "pnpm"
 
-      - name: Install pnpm
-        run: npm i -g pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Link theme (ShokaX)
+      # ✅ 关键：CI 环境补上主题链接（ShokaX）
+      - name: Link ShokaX theme
         run: |
           rm -rf themes/shokax
           ln -s ../node_modules/hexo-theme-shokax themes/shokax
-
+          ls -la themes | sed -n '1,120p'
+          ls -la themes/shokax | sed -n '1,60p'
 
       - name: Build
+        env:
+          TZ: Asia/Singapore
         run: |
           pnpm hexo clean
           pnpm hexo generate
+          test -d public
+          ls -la public | sed -n '1,120p'
 
       - name: Push public to wayfare11/blog
         uses: cpina/github-action-push-to-another-repository@main
