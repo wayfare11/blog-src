@@ -19,24 +19,37 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: "pnpm"
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      # ✅ 安装 pnpm（推荐用 corepack，Node 18 自带）
+      - name: Enable pnpm via corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@9 --activate
+          pnpm -v
+
+      # ✅ 缓存 pnpm store（这一步必须在 pnpm 可用之后）
+      - name: Get pnpm store path
+        id: pnpm-cache
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
         with:
-          version: 9
-          run_install: false
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # ✅ 关键：CI 环境补上主题链接（ShokaX）
+      # ✅ 关键：CI 环境补 ShokaX 主题链接
       - name: Link ShokaX theme
         run: |
           rm -rf themes/shokax
           ln -s ../node_modules/hexo-theme-shokax themes/shokax
-          ls -la themes | sed -n '1,120p'
-          ls -la themes/shokax | sed -n '1,60p'
+          ls -la themes
+          ls -la themes/shokax | head -n 50
 
       - name: Build
         env:
@@ -44,8 +57,8 @@ jobs:
         run: |
           pnpm hexo clean
           pnpm hexo generate
-          test -d public
-          ls -la public | sed -n '1,120p'
+          test -f public/index.html
+          ls -la public | head -n 80
 
       - name: Push public to wayfare11/blog
         uses: cpina/github-action-push-to-another-repository@main
