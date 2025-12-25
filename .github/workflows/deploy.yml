@@ -42,15 +42,7 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      # ✅ 关键：CI 环境补 ShokaX 主题链接
-      - name: Link ShokaX theme
-        run: |
-          rm -rf themes/shokax
-          ln -s ../node_modules/hexo-theme-shokax themes/shokax
-          ls -la themes
-          ls -la themes/shokax | head -n 50
-
+        
       - name: Build
         env:
           TZ: Asia/Singapore
