@@ -60,13 +60,13 @@ jobs:
           test -f public/index.html
           ls -la public | head -n 80
 
-      - name: Push public to wayfare11/blog
+      - name: Push public to wayfare11.github.io
         uses: cpina/github-action-push-to-another-repository@main
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         with:
           source-directory: "./public"
           destination-github-username: "wayfare11"
-          destination-repository-name: "blog"
+          destination-repository-name: "wayfare11.github.io"
           user-email: "way19971111@163.com"
           target-branch: "main"
