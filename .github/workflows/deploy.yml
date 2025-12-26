@@ -20,14 +20,12 @@ jobs:
         with:
           node-version: 18
 
-      # ✅ 安装 pnpm（推荐用 corepack，Node 18 自带）
       - name: Enable pnpm via corepack
         run: |
           corepack enable
           corepack prepare pnpm@9 --activate
           pnpm -v
 
-      # ✅ 缓存 pnpm store（这一步必须在 pnpm 可用之后）
       - name: Get pnpm store path
         id: pnpm-cache
         run: echo "STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
@@ -42,18 +40,37 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        
-      - name: Build
+
+      - name: Build + Inspect output
         env:
           TZ: Asia/Singapore
         run: |
           pnpm hexo clean
           pnpm hexo generate
+
+          echo "==== A) Does Hexo see any posts? ===="
+          pnpm hexo list post | sed -n '1,200p'
+
+          echo "==== B) source/_posts files count ===="
+          find source/_posts -type f \( -name "*.md" -o -name "*.markdown" \) | wc -l
+          find source/_posts -type f \( -name "*.md" -o -name "*.markdown" \) | sed -n '1,50p'
+
+          echo "==== C) public basic checks ===="
           test -f public/index.html
-          ls -la public | head -n 80
+          du -sh public || true
+          echo "public files:"; find public -type f | wc -l
+          echo "public html:";  find public -type f -name "*.html" | wc -l
+          echo "some html:";    find public -type f -name "*.html" | head -n 80
+
+          # 建议：禁用 Jekyll 处理
+          touch public/.nojekyll
+
+          # 关键：避免目标仓库里 .gitignore 把 js/css/json 等生成文件忽略掉
+          # 这会用 public/.gitignore 覆盖目标仓库根目录的 .gitignore
+          printf "# keep all generated files\n" > public/.gitignore
 
       - name: Push public to wayfare11.github.io
-        uses: cpina/github-action-push-to-another-repository@main
+        uses: cpina/github-action-push-to-another-repository@v1.7.3
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         with:
