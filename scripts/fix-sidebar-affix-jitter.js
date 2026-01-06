@@ -11,7 +11,7 @@ script.
     let pending = null;
     let count = 0;
 
-    const REQUIRED = 5;  // 建议 5，更稳
+    const REQUIRED = 2;  // 建议 5，更稳
     const TOKEN = 'affix';
 
     function refreshTarget() {
