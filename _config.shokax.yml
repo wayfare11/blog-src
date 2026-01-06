@@ -1,1 +1,3 @@
-
+widgets:
+  recent_comments: false
+  random_posts: true   # 想省事也可以先一起改成 false 做排除
