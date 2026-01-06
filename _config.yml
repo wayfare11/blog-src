@@ -43,8 +43,6 @@ render_drafts: false
 post_asset_folder: false
 relative_link: false
 future: true
-marked:
-  prependRoot: true
 syntax_highlighter: false
 highlight:
   line_number: false
