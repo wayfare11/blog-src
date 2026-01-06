@@ -1,12 +1,11 @@
-#quick
-  position: relative
-  padding-bottom: .125rem
-
-#quick li.percent
-  position: absolute
-  left: 0
-  bottom: 0
-  height: .125rem
-  min-height: .125rem
-  pointer-events: none
-  transition: none !important
+@media (min-width: 1024px)
+  /* 覆盖“affix/非affix”两种状态：让它们都变成 sticky */
+  #sidebar .inner,
+  #sidebar.affix .inner,
+  #sidebar,
+  #sidebar.affix
+    position: sticky !important
+    top: 1rem !important
+    bottom: auto !important
+    transform: none !important
+    transition: none !important
