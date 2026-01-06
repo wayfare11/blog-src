@@ -131,7 +131,7 @@ minify:
       targets: ">= 0.5%" # Browser targets in browserslist format
     exclude: # Excluded files (string[] compatible with micromatch patterns)
   image:
-    enable: true # Enable image preprocessing and automatic WebP conversion
+    enable: false # Enable image preprocessing and automatic WebP conversion
     options:
       # Format selection
       avif: true
