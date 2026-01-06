@@ -8,7 +8,7 @@ subtitle: ''
 description: '我的博客'
 keywords:
 author: John Doe
-language: zh-cn
+language: zh-CN
 timezone: 'Asia/Shanghai'
 
 # URL
@@ -131,7 +131,7 @@ minify:
       targets: ">= 0.5%" # Browser targets in browserslist format
     exclude: # Excluded files (string[] compatible with micromatch patterns)
   image:
-    enable: false # Enable image preprocessing and automatic WebP conversion
+    enable: true # Enable image preprocessing and automatic WebP conversion
     options:
       # Format selection
       avif: true
