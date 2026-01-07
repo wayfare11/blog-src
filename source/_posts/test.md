@@ -32,3 +32,27 @@ quiz: true
 10. 如果定义`int e=8; double f=6.4, g=8.9;`，则表达式 `f+int(e/3*int(f+g)/2)%4` 的值为 [9.4]{.gap}。 {.quiz .fill}
     > 注意运算顺序和数据类型
     > [8.4]{.mistake}
+
+
+++下划线++
+++波浪线++{.wavy}
+++着重点++{.dot}
+++紫色下划线++{.primary}
+++绿色波浪线++{.wavy .success}
+++黄色着重点++{.dot .warning}
+~~删除线~~
+~~红色删除线~~{.danger}
+==荧光高亮==
+[赤橙黄绿青蓝紫]{.rainbow}
+[红色]{.red}
+[粉色]{.pink}
+[橙色]{.orange}
+[黄色]{.yellow}
+[绿色]{.green}
+[靛青]{.aqua}
+[蓝色]{.blue}
+[紫色]{.purple}
+[灰色]{.grey}
+快捷键 [Ctrl]{.kbd} + [C]{.kbd .red}
+H~2~0
+29^th^
