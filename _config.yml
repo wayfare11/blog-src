@@ -159,6 +159,6 @@ live2d:
     position: left   # 👈 左侧
     width: 150
     height: 300
-    hOffset: 20
+    hOffset: 60
     vOffset: -20
 
