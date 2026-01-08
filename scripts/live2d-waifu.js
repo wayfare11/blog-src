@@ -1,26 +1,17 @@
 /* scripts/live2d-waifu.js */
 
 const WIDGET_BASE = "https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/";
-// 模型仓库（项目本体不带模型，需要 cdnPath）
 const MODEL_CDN = "https://cdn.jsdelivr.net/gh/fghrsh/live2d_api/";
 
 hexo.extend.injector.register("head_end", () => {
   return `
 <link rel="stylesheet" href="${WIDGET_BASE}waifu.css">
 <style>
-  /* 置顶，避免被主题遮住 */
   #waifu { z-index: 999999 !important; }
-  /* 有些版本默认移动端隐藏，这里强制显示 */
-  @media (max-width: 768px) {
-    #waifu { display: block !important; }
-  }
+  @media (max-width: 768px) { #waifu { display: block !important; } }
 
-  /* 预览面板样式 */
-  #live2d-picker-panel button {
-    cursor: pointer;
-    border: 0;
-    border-radius: 6px;
-    padding: 4px 8px;
+  #live2d-picker-panel button{
+    cursor:pointer;border:0;border-radius:6px;padding:4px 8px;
   }
 </style>
 `;
@@ -34,7 +25,7 @@ hexo.extend.injector.register("body_end", () => {
     return new Promise(function (resolve, reject) {
       var s = document.createElement("script");
       s.src = src;
-      s.async = false; // 保证顺序
+      s.async = false;
       s.onload = resolve;
       s.onerror = function () { reject(new Error("Failed to load: " + src)); };
       document.body.appendChild(s);
@@ -46,40 +37,6 @@ hexo.extend.injector.register("body_end", () => {
     if (old && old.parentNode) old.parentNode.removeChild(old);
   }
 
-  // 把 {models:[...], messages:[...]} 展开成 27 个可选项
-  function fetchModelFlatList() {
-    return fetch("${MODEL_CDN}model_list.json")
-      .then(function (r) { return r.json(); })
-      .then(function (data) {
-        var groups = data && data.models ? data.models : [];
-        var messages = data && data.messages ? data.messages : [];
-        var flat = [];
-
-        for (var gid = 0; gid < groups.length; gid++) {
-          var entry = groups[gid];
-          var msg = messages[gid] ? (" | " + messages[gid]) : "";
-
-          if (Array.isArray(entry)) {
-            for (var tid = 0; tid < entry.length; tid++) {
-              flat.push({
-                groupId: gid,
-                texId: tid,
-                label: String(entry[tid]) + msg
-              });
-            }
-          } else {
-            flat.push({
-              groupId: gid,
-              texId: 0,
-              label: String(entry) + msg
-            });
-          }
-        }
-        return flat;
-      });
-  }
-
-  // 预览面板
   function ensurePanel() {
     var id = "live2d-picker-panel";
     var p = document.getElementById(id);
@@ -107,39 +64,68 @@ hexo.extend.injector.register("body_end", () => {
         <button id="l2d-stop" style="display:none;">停止</button>
       </div>
       <div style="margin-top:8px;opacity:.8;">
-        提示：看中某个后，记下上面的 modelId / modelTexturesId。
+        看中某个就记下 modelId / modelTexturesId。
       </div>
     `;
-
     document.body.appendChild(p);
-
-    p.querySelector("#l2d-close").onclick = function () {
-      p.remove();
-    };
-
+    p.querySelector("#l2d-close").onclick = function () { p.remove(); };
     return p;
   }
 
-  var KEY = "live2d_picker_idx_v1";
+  // 拉模型列表并展开为 flat list（27 个）
+  function fetchModelFlatList() {
+    return fetch("${MODEL_CDN}model_list.json")
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var groups = (data && data.models) ? data.models : [];
+        var messages = (data && data.messages) ? data.messages : [];
+        var flat = [];
 
+        for (var gid = 0; gid < groups.length; gid++) {
+          var entry = groups[gid];
+          var msg = messages[gid] ? (" | " + messages[gid]) : "";
+
+          if (Array.isArray(entry)) {
+            for (var tid = 0; tid < entry.length; tid++) {
+              flat.push({ groupId: gid, texId: tid, label: String(entry[tid]) + msg });
+            }
+          } else {
+            flat.push({ groupId: gid, texId: 0, label: String(entry) + msg });
+          }
+        }
+
+        return flat;
+      });
+  }
+
+  // 兜底：即使模型列表挂了，也至少显示一只
+  function initDefaultModel() {
+    console.warn("[Live2D] fallback to default model (modelId=0).");
+    cleanupOld();
+    window.initWidget({
+      waifuPath: "${WIDGET_BASE}waifu-tips.json",
+      cdnPath: "${MODEL_CDN}",
+      drag: true,
+      modelId: 0,
+      modelTexturesId: 0,
+      logLevel: "warn"
+    });
+  }
+
+  var KEY = "live2d_picker_idx_v2";
   function loadPick() {
     try {
       var raw = localStorage.getItem(KEY);
       if (!raw) return 0;
       var obj = JSON.parse(raw);
       return typeof obj.idx === "number" ? obj.idx : 0;
-    } catch (e) {
-      return 0;
-    }
+    } catch (e) { return 0; }
   }
-
   function savePick(idx) {
     localStorage.setItem(KEY, JSON.stringify({ idx: idx }));
   }
 
   function initByFlat(flat, idx) {
-    if (!flat || !flat.length) return;
-
     idx = (idx + flat.length) % flat.length;
     var item = flat[idx];
 
@@ -148,14 +134,9 @@ hexo.extend.injector.register("body_end", () => {
     window.initWidget({
       waifuPath: "${WIDGET_BASE}waifu-tips.json",
       cdnPath: "${MODEL_CDN}",
-
-      // 可拖拽
       drag: true,
-
-      // 关键：组 + 子模型
       modelId: item.groupId,
       modelTexturesId: item.texId,
-
       logLevel: "warn"
     });
 
@@ -182,18 +163,17 @@ hexo.extend.injector.register("body_end", () => {
       return;
     }
 
-    // 每次 boot 都用同一个面板与同一份 flat 列表（避免重复 fetch）
-    if (boot.__running) return;
-    boot.__running = true;
-
     fetchModelFlatList()
       .then(function (flat) {
-        console.log("[Live2D] total models:", flat.length);
+        console.log("[Live2D] flat models =", flat.length);
+        if (!flat.length) {
+          initDefaultModel();
+          return;
+        }
 
         var panel = ensurePanel();
         var idx = loadPick();
-        if (idx < 0) idx = 0;
-        if (idx >= flat.length) idx = 0;
+        if (idx < 0 || idx >= flat.length) idx = 0;
 
         var autoTimer = null;
 
@@ -202,7 +182,6 @@ hexo.extend.injector.register("body_end", () => {
           initByFlat(flat, idx);
         }
 
-        // 初次显示
         show(idx);
 
         panel.querySelector("#l2d-prev").onclick = function () { show(idx - 1); };
@@ -213,7 +192,7 @@ hexo.extend.injector.register("body_end", () => {
           if (autoTimer) return;
           panel.querySelector("#l2d-auto").style.display = "none";
           panel.querySelector("#l2d-stop").style.display = "inline-block";
-          autoTimer = setInterval(function () { show(idx + 1); }, 5000); // 5 秒换一个
+          autoTimer = setInterval(function () { show(idx + 1); }, 5000);
         };
 
         panel.querySelector("#l2d-stop").onclick = function () {
@@ -224,21 +203,19 @@ hexo.extend.injector.register("body_end", () => {
         };
       })
       .catch(function (e) {
-        console.error("[Live2D] failed to build model list:", e);
-      })
-      .finally(function () {
-        boot.__running = false;
+        console.error("[Live2D] fetch model_list failed:", e);
+        // 关键：失败也要显示默认模型，避免“空白”
+        initDefaultModel();
       });
   }
 
-  // 首次加载：确保 live2d.min.js、waifu-tips.js 加载后再 boot
+  // 先加载脚本，再 boot
   Promise.resolve()
     .then(function () { return loadScript("${WIDGET_BASE}live2d.min.js"); })
     .then(function () { return loadScript("${WIDGET_BASE}waifu-tips.js"); })
     .then(function () { boot(); })
     .catch(function (e) { console.error("[Live2D] load error:", e); });
 
-  // ShokaX PJAX：切页后重挂（脚本不会重复加载，只重 init）
   document.addEventListener("pjax:complete", boot);
   document.addEventListener("pjax:success", boot);
 })();
