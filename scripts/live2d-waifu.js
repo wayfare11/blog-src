@@ -55,7 +55,7 @@ hexo.extend.injector.register("body_end", () => {
         // 关键：可拖拽
         drag: true,
 
-        modelId: 0,
+        modelId: 1,
         logLevel: "warn"
       });
 
