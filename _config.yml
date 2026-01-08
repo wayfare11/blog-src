@@ -151,14 +151,21 @@ minify:
 live2d:
   enable: true
   scriptFrom: local
-
   model:
     use: live2d-widget-model-hijiki
-
   display:
-    position: left   # 👈 左侧
+    position: left
     width: 150
     height: 300
     hOffset: 50
     vOffset: -20
-
+  mobile:
+    show: true
+  react:
+    opacity: 0.7
+    minOpacity: 0.2
+    radius: 60
+  devtools: false
+  dialog:
+    enable: false
+  drag: true  # 👈 关键！启用拖拽
