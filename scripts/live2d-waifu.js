@@ -82,5 +82,4 @@ hexo.extend.injector.register("body_end", () => {
 })();
 </script>
 `;
-});还是不显示，只有我现在发的方法是显示的
-给全修改后的代码
+});
