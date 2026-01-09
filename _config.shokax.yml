@@ -1,7 +1,7 @@
 alternate: "wayfar"
 
 menu:
-  首页: / || home
   分类: /categories/ || th
   标签: /tags/ || tags
   关于: /about/ || user
+
