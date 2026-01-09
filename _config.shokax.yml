@@ -4,11 +4,12 @@ audio: []
 
 menu:
   文章:
-    default: /archives/ || list-alt
+    default: /archives/ || feather
     归档: /archives/ || list-alt
     分类: /categories/ || th
     标签: /tags/ || tags
   关于: /about/ || user
   友链: /friends/ || heart
+
 
 
