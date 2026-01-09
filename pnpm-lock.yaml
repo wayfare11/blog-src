@@ -35,6 +35,9 @@ importers:
       hexo-algoliasearch:
         specifier: 2.0.1
         version: 2.0.1
+      hexo-blog-encrypt:
+        specifier: ^3.1.9
+        version: 3.1.9
       hexo-feed:
         specifier: 1.1.2
         version: 1.1.2(chalk@4.1.2)(hexo@7.3.0(chokidar@3.6.0))
@@ -1697,6 +1700,9 @@ packages:
   hexo-algoliasearch@2.0.1:
     resolution: {integrity: sha512-QbzB6M/ZByidBeeNyhTMC7zMl8BddG+ovobO6VjK7HufUW2iHSLZYG93gi3Fri2xji0mTn6c80Q6G60U1ILq+Q==}
     engines: {node: '>=18'}
+
+  hexo-blog-encrypt@3.1.9:
+    resolution: {integrity: sha512-dzuZiW5mD8t1FOhJXqc+IgV1Tc45YtatJb/w8k4PyT9McQxsROQXsBw+zbDembzuqMnbnkCeT2SapZ/r9AgAcw==}
 
   hexo-cli@4.3.2:
     resolution: {integrity: sha512-druJeBgLpG9ncDS5AhBHdAXk0G4CFj8Qes09pApyZ6bR+nJW1JYiDMuilhudaKDdq+1l49jWXVTidkcb7p0Jbw==}
@@ -4811,6 +4817,8 @@ snapshots:
     dependencies:
       algoliasearch: 4.20.0
       striptags: 3.2.0
+
+  hexo-blog-encrypt@3.1.9: {}
 
   hexo-cli@4.3.2:
     dependencies:
