@@ -147,9 +147,3 @@ minify:
       persistCache: true # Enable persistent caching of processed images
       # Stores optimized images on disk to accelerate subsequent builds
     exclude: # Excluded files (string[] compatible with micromatch patterns)
-
-encrypt:
-  abstract: 这是加密内容，输入密码后继续阅读。
-  message: 请输入访问密码
-  wrong_pass_message: 密码错误，请重试
-  wrong_hash_message: 内容校验失败（可能被篡改），仍可尝试查看
