@@ -8,6 +8,9 @@ tags:
   - 教程
   - 静态博客
   - Markdown
+password: 123456
+abstract: 这是加密内容，输入密码后继续阅读。
+message: 请输入访问密码
 ---
 
 Welcome to [Hexo](https://hexo.io/)! This is your very first post. Check [documentation](https://hexo.io/docs/) for more info. If you get any problems when using Hexo, you can find the answer in [troubleshooting](https://hexo.io/docs/troubleshooting.html) or you can ask me on [GitHub](https://github.com/hexojs/hexo/issues).
